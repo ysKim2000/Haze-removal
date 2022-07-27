@@ -1,9 +1,7 @@
 import cv2
 from cv2 import imwrite
 import numpy as np
-import os
-from skimage import morphology
-import matplotlib.pyplot as plt
+from os import path as ospath
 
 BINS = 256
 MAX_LEVEL = BINS - 1
@@ -33,21 +31,23 @@ def transform(img, I, sbte): # img: depth, I: Hazy image, sbte: dehazy image
 
     masked = cv2.copyTo(I, near_image, sbte)
     cv2.imshow('masked', masked)
-    cv2.imwrite('dehaze/outputs/result.jpg', masked)
-    
-    cv2.imshow('near', near_image)
-    cv2.imshow('far', far_image)
-    cv2.imwrite('dehaze/outputs/near_image.jpg', near_image)
-    cv2.imwrite('dehaze/outputs/far_image.jpg', far_image)
-    return near_image, far_image
+
+    return masked
 
 
 if __name__ == "__main__":
-    I = cv2.imread('data/haze_image.jpg')
-    depth_I = cv2.imread('data/haze_depth.jpg')
-    sbte = cv2.imread('data/sbte.jpg')
-    # v = get_value(depth_I)
+    DIR = 'dehaze/outputs'
+    FILE_NAME = 'forest.jpg'
+    O_PATH = ospath.join(DIR, FILE_NAME)
+    I_PATH = ospath.join('./data/hazy', FILE_NAME)
+    DEPTH_I_PATH = ospath.join('./data/depth', FILE_NAME)
+    SBTE_PATH = ospath.join('dehaze/sbte_result', FILE_NAME)
+
+    I = cv2.imread(I_PATH)
+    depth_I = cv2.imread(DEPTH_I_PATH)
+    sbte = cv2.imread(SBTE_PATH)
     v = cv2.cvtColor(depth_I, cv2.COLOR_BGR2GRAY)
-    a, b = transform(v, I, sbte)
+    result = transform(v, I, sbte)
+    cv2.imwrite(O_PATH, result)
 
     cv2.waitKey()
