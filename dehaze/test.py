@@ -30,14 +30,7 @@ def transform(img, I, sbte): # img: depth, I: Hazy image, sbte: dehazy image
                 near_image[i][j] = img[i][j] 
             else:
                 far_image[i][j] = img[i][j] 
-    # 각각 I랑 합성시키고, near_image에서는 I의 배경이 들어가고
-    # far_image에는 I의 사람이 들어감
-    # I랑 합성한 near_image를 SBTE 알고리즘 돌려
-    # 그러면 지금 나온 게 far_image의 정상인 사람과 안개제거된 배경이 있음
-    # 나온 결과 두 개를 합성함.     
-    print(np.shape(I))
-    print(np.shape(near_image))
-    print(np.shape(sbte))
+
     masked = cv2.copyTo(I, near_image, sbte)
     cv2.imshow('masked', masked)
     cv2.imwrite('dehaze/outputs/result.jpg', masked)
