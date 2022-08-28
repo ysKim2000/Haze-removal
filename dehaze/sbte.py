@@ -183,15 +183,15 @@ def SBTE(img, is_only_result=True):
 
 
 if __name__ == "__main__":
-    DIR = 'dehaze/sbte_result'
+    DIR = 'dehaze/outputs'
     file_name = 'trees.jpg'
-    O_PATH = ospath.join(DIR, file_name)
+    O_PATH = ospath.join(DIR, "sbte_"+file_name)
     I_PATH = ospath.join('./data/hazy', file_name)
 
     I = cv2.imread(I_PATH)
     J, J_enhanced, transmission_map = SBTE(I, is_only_result=False)
 
-    # cv2.imwrite(O_PATH, J)
+    cv2.imwrite(O_PATH, J)
     cv2.imshow('Haze image', I)
     cv2.imshow('Dehazed image', J / MAX_LEVEL)
 
