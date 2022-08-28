@@ -7,17 +7,6 @@ BINS = 256
 MAX_LEVEL = BINS - 1
 
 
-def i2f(img):
-    return img / MAX_LEVEL
-
-
-def f2i(img):
-    return np.uint8(np.around(img * MAX_LEVEL))
-
-def get_value(img):
-    return np.average(img, 2)
-
-
 def transform(img, I, sbte): # img: depth, I: Hazy image, sbte: dehazy image
     h, w = img.shape[:2]
     near_image = np.zeros(img.shape, img.dtype)
@@ -29,7 +18,7 @@ def transform(img, I, sbte): # img: depth, I: Hazy image, sbte: dehazy image
             else:
                 far_image[i][j] = img[i][j] 
 
-    masked = cv2.copyTo(I, near_image, sbte)
+    masked = cv2.copyTo(I, near_image, sbte) # Haze image, masked image, dehaze image
     cv2.imshow('masked', masked)
 
     return masked
@@ -37,7 +26,7 @@ def transform(img, I, sbte): # img: depth, I: Hazy image, sbte: dehazy image
 
 if __name__ == "__main__":
     DIR = 'dehaze/outputs'
-    FILE_NAME = 'forest.jpg'
+    FILE_NAME = 'trees.jpg'
     O_PATH = ospath.join(DIR, FILE_NAME)
     I_PATH = ospath.join('./data/hazy', FILE_NAME)
     DEPTH_I_PATH = ospath.join('./data/depth', FILE_NAME)

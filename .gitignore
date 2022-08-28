@@ -2,9 +2,3 @@
 __pycache__/
 papers/
 drop/
-data/
-dehaze/outputs/
-dehaze/sbte_result/
-monodepth2/assets/
-monodepth2/outputs/
-outputs/
