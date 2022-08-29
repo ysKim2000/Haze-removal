@@ -172,7 +172,7 @@ def normalize(img):
 
 if __name__ == "__main__":
     DIR = 'dehaze/outputs'
-    file_name = 'GRCN.png'
+    file_name = 'IRQ_Google_010.png'
     I_PATH = ospath.join('./data/hazy', file_name)
 
     I = cv2.imread(I_PATH)

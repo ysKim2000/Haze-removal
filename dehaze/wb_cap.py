@@ -89,7 +89,7 @@ def _estimate_AtmosphericLight(img, value, depth_map):
     for x in range(len(indices_rows)):
         i = indices_rows[x]
         j = indices_columns[x]
-
+        
         if value[i][j] >= v:
             A = img[i][j]
             v = value[i][j]
@@ -119,7 +119,7 @@ def CAP(img, beta=DEFAULT_BETA, is_only_result=True):
     refined_depth_map = _refine_DepthMap(filtered_depth_map, depth_map)
 
     # A = _estimate_AtmosphericLight(img, hsv[..., 2], depth_map)
-    A, phase = white_balance(img, hsv[..., 2], depth_map)
+    A, phase = white_balance(img, hsv, depth_map)
     J = _recover(img, refined_depth_map, A, beta)
 
     if is_only_result:
@@ -140,12 +140,13 @@ def white_balance(img, hsv, depth_map):
     EPSILON = 0.02
 
     if np.max(A) - np.min(A) < np.max(A_WB) - np.min(A_WB) + EPSILON:
-        print('Phase I - Normal')
+        print('Phase I - Normal') 
         phase = "normal_"
     else:
         print('Phase II - White Balance')
         phase = "wb_"
         A = A_WB
+        
     return A, phase
 
 def gray_world(img):
@@ -165,22 +166,37 @@ def gray_world(img):
  
     return  R
 
-
+import os
 
 if __name__ == "__main__":
     DIR = 'dehaze/outputs'
-    file_name = 'GRCN.png'
-    I_PATH = ospath.join('./data/hazy', file_name)
+    # file_name = 'GSGL_Bing_681.png'
+    # I_PATH = ospath.join('./data/hazy', file_name)
 
-    I = cv2.imread(I_PATH)
-    J, depth_map, filtered_depth_map, refined_depth_map, phase = CAP(I, is_only_result=False)
-    O_PATH = ospath.join(DIR, "cap_"+phase+file_name)
-
-    cv2.imwrite(O_PATH, J)
-    cv2.imshow('Haze image', I)
-    cv2.imshow('Dehazed image', J / MAX_LEVEL)
+    # I = cv2.imread(I_PATH)
+    # J, depth_map, filtered_depth_map, refined_depth_map, phase = CAP(I, is_only_result=False)
+    # O_PATH = ospath.join(DIR, "cap_"+phase+file_name)
+    
+    def print_files_in_dir(root_dir):
+        files = os.listdir(root_dir)
+        for file in files:
+            path = os.path.join(root_dir, file)
+            I = cv2.imread(path)
+            J, depth_map, filtered_depth_map, refined_depth_map, phase = CAP(I, is_only_result=False)
+            O_PATH = ospath.join(DIR, "cap_"+phase+file)
+            if(phase == "wb_"):
+                cv2.imwrite(O_PATH, J)
+            
+    print_files_in_dir("C:/Users/user/Desktop/RTTS/JPEGImages",)
+    
+    
+    # if(phase == "wb_"):
+    #     cv2.imwrite(O_PATH, J)
+    # cv2.imshow('Haze image', I)
+    # cv2.imshow('Dehazed image', J / MAX_LEVEL)
     cv2.waitKey()
 
     # cv2.imwrite(ospath.join(DIR, 'depth map (CAP).jpg'), depth_map)
     # cv2.imwrite(ospath.join(DIR, 'min-filtered depth map (CAP).jpg'), filtered_depth_map)
     # cv2.imwrite(ospath.join(DIR, 'refined depth map (CAP).jpg'), refined_depth_map)
+    
