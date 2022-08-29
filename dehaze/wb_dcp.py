@@ -131,9 +131,9 @@ def white_balance(img, dark_channel):
         phase = "wb_"
         A = A_WB
         
-    out = np.empty(img.shape, img.dtype)
-    for i in range(3):
-        out[..., i] = I[..., i] / A[i]
+    # out = np.empty(img.shape, img.dtype)
+    # for i in range(3):
+    #     out[..., i] = I[..., i] / A[i]
         
     return A, phase
 
@@ -172,12 +172,12 @@ def normalize(img):
 
 if __name__ == "__main__":
     DIR = 'dehaze/outputs'
-    file_name = 'IRQ_Google_010.png'
-    O_PATH = ospath.join(DIR, "dcp_"+file_name)
+    file_name = 'GRCN.png'
     I_PATH = ospath.join('./data/hazy', file_name)
 
     I = cv2.imread(I_PATH)
     J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
+    O_PATH = ospath.join(DIR, "dcp_"+phase+file_name)
 
     cv2.imwrite(O_PATH, J)
     cv2.imshow('Haze image', I)
