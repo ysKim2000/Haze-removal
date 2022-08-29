@@ -138,7 +138,6 @@ def white_balance(img, dark_channel):
     return A, phase
 
 
-
 def get_value(img):
     return np.average(img, 2)
 
