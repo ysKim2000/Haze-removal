@@ -170,18 +170,36 @@ def normalize(img):
         
     return R
 
+import os
+
 if __name__ == "__main__":
-    DIR = 'dehaze/outputs'
-    file_name = 'IRQ_Google_010.png'
-    I_PATH = ospath.join('./data/hazy', file_name)
+    # DIR = 'dehaze/outputs'
+    # file_name = 'IRQ_Google_010.png'
+    # I_PATH = ospath.join('./data/hazy', file_name)
 
-    I = cv2.imread(I_PATH)
-    J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
-    O_PATH = ospath.join(DIR, "dcp_"+phase+file_name)
+    # I = cv2.imread(I_PATH)
+    # J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
+    # O_PATH = ospath.join(DIR, "dcp_"+phase+file_name)
 
-    cv2.imwrite(O_PATH, J)
-    cv2.imshow('Haze image', I)
-    cv2.imshow('Dehazed image', J / MAX_LEVEL)
+    # cv2.imwrite(O_PATH, J)
+    # cv2.imshow('Haze image', I)
+    # cv2.imshow('Dehazed image', J / MAX_LEVEL)
+
+    def print_files_in_dir(root_dir):
+        files = os.listdir(root_dir)
+        for file in files:
+            path = os.path.join(root_dir, file)
+            I = cv2.imread(path)
+            J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
+            NORMAL_PATH = ospath.join('dehaze/outputs/normal', "dcp_"+phase+file)
+            WB_PATH = ospath.join('dehaze/outputs/white balance', "dcp_"+phase+file)
+            if(phase == "wb_"):
+                cv2.imwrite(WB_PATH, J)
+            else:
+                cv2.imwrite(NORMAL_PATH, J)
+            
+    print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
+
 
     # cv2.imwrite(ospath.join(DIR, 'dark channel (DCP).jpg'), dark_channel)
     # cv2.imwrite(ospath.join(DIR, 'transmission map (DCP).jpg'), transmission_map)

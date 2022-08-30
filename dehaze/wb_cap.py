@@ -183,11 +183,15 @@ if __name__ == "__main__":
             path = os.path.join(root_dir, file)
             I = cv2.imread(path)
             J, depth_map, filtered_depth_map, refined_depth_map, phase = CAP(I, is_only_result=False)
-            O_PATH = ospath.join(DIR, "cap_"+phase+file)
+            NORMAL_PATH = ospath.join('dehaze/outputs/normal', "cap_"+phase+file)
+            WB_PATH = ospath.join('dehaze/outputs/white balance', "cap_"+phase+file)
+            # O_PATH = ospath.join(DIR, "cap_"+phase+file)
             if(phase == "wb_"):
-                cv2.imwrite(O_PATH, J)
+                cv2.imwrite(WB_PATH, J)
+            else:
+                cv2.imwrite(NORMAL_PATH, J)
             
-    print_files_in_dir("C:/Users/user/Desktop/RTTS/JPEGImages",)
+    print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
     
     
     # if(phase == "wb_"):
