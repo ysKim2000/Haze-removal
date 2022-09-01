@@ -9,6 +9,12 @@ MAX_LEVEL = BINS - 1
 
 DEFAULT_BETA = 1 # Dehazing strength
 
+def i2f(img):
+    return img / MAX_LEVEL
+
+def f2i(img):
+    return np.uint(np.around(img * MAX_LEVEL))
+
 
 def quantization(pixels, min, max):
     v = (max - min) / MAX_LEVEL
@@ -93,7 +99,6 @@ def _estimate_AtmosphericLight(img, value, depth_map):
         if value[i][j] >= v:
             A = img[i][j]
             v = value[i][j]
-
     return A
 
 # A: atmospheric light, beta: dehazing strength
@@ -113,11 +118,10 @@ def _recover(img, depth_map, A, beta):
 # Color Attenuation Prior
 def CAP(img, beta=DEFAULT_BETA, is_only_result=True):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) / MAX_LEVEL
-
     depth_map = _calculate_DepthMap(hsv)
     filtered_depth_map = _filter_DepthMap(depth_map)
     refined_depth_map = _refine_DepthMap(filtered_depth_map, depth_map)
-
+    # print(img.dtype, hsv.dtype, depth_map.dtype)
     # A = _estimate_AtmosphericLight(img, hsv[..., 2], depth_map)
     A, phase = white_balance(img, hsv, depth_map)
     J = _recover(img, refined_depth_map, A, beta)
@@ -132,6 +136,7 @@ def CAP(img, beta=DEFAULT_BETA, is_only_result=True):
 
 
 def white_balance(img, hsv, depth_map):
+    img = i2f(img)
     A = _estimate_AtmosphericLight(img, hsv[..., 2], depth_map)
 
     # Compute white balanced A
@@ -169,8 +174,8 @@ def gray_world(img):
 import os
 
 if __name__ == "__main__":
-    DIR = 'dehaze/outputs'
-    # file_name = 'GSGL_Bing_681.png'
+    # DIR = 'dehaze/outputs/result'
+    # file_name = 'GRCN.png'
     # I_PATH = ospath.join('./data/hazy', file_name)
 
     # I = cv2.imread(I_PATH)
@@ -198,9 +203,8 @@ if __name__ == "__main__":
     #     cv2.imwrite(O_PATH, J)
     # cv2.imshow('Haze image', I)
     # cv2.imshow('Dehazed image', J / MAX_LEVEL)
-    cv2.waitKey()
+    # cv2.waitKey()
 
     # cv2.imwrite(ospath.join(DIR, 'depth map (CAP).jpg'), depth_map)
     # cv2.imwrite(ospath.join(DIR, 'min-filtered depth map (CAP).jpg'), filtered_depth_map)
     # cv2.imwrite(ospath.join(DIR, 'refined depth map (CAP).jpg'), refined_depth_map)
-    

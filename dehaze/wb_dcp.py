@@ -58,7 +58,7 @@ def estimate_AtmosphericLight(img, base_2d):
 
     # n_px: the number of pixels
     n_px = int( max( math.floor(resolution / 1000), 1 ) )
-    
+
     # v_: vector
     v_img = img.reshape(resolution, 3)
     v_base = base_2d.reshape(resolution)
@@ -100,12 +100,16 @@ def recover(img, map, A):
 # Dark Channel Prior
 def DCP(img, is_only_result=True):
     I = i2f(img)
-
+    
     dark_channel = get_DarkChannel(I, K=15)
     
     # A = estimate_AtmosphericLight(I, dark_channel)
     A, phase = white_balance(I, dark_channel) # <- white balance A or original A
-    
+    # cv2.imwrite('dehaze/outputs/result/dcp_test.jpg', A)
+    # print(A)
+    # print(np.shape(A))
+    # print(A.dtype)
+
     transmission_map = estimate_TransmissionMap(I, A, 15)
     transmission_map = refine_TransmissionMap(img, transmission_map)
     J = recover(I, transmission_map, A)
@@ -173,36 +177,36 @@ def normalize(img):
 import os
 
 if __name__ == "__main__":
-    # DIR = 'dehaze/outputs'
-    # file_name = 'IRQ_Google_010.png'
-    # I_PATH = ospath.join('./data/hazy', file_name)
+    DIR = 'dehaze/outputs/result'
+    file_name = 'GRCN.png'
+    I_PATH = ospath.join('./data/hazy', file_name)
 
-    # I = cv2.imread(I_PATH)
-    # J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
-    # O_PATH = ospath.join(DIR, "dcp_"+phase+file_name)
+    I = cv2.imread(I_PATH)
+    J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
+    O_PATH = ospath.join(DIR, "dcp_"+phase+file_name)
 
-    # cv2.imwrite(O_PATH, J)
-    # cv2.imshow('Haze image', I)
-    # cv2.imshow('Dehazed image', J / MAX_LEVEL)
+    cv2.imwrite(O_PATH, J)
+    cv2.imshow('Haze image', I)
+    cv2.imshow('Dehazed image', J / MAX_LEVEL)
 
-    def print_files_in_dir(root_dir):
-        files = os.listdir(root_dir)
-        for file in files:
-            path = os.path.join(root_dir, file)
-            I = cv2.imread(path)
-            J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
-            NORMAL_PATH = ospath.join('dehaze/outputs/normal', "dcp_"+phase+file)
-            WB_PATH = ospath.join('dehaze/outputs/white balance', "dcp_"+phase+file)
-            if(phase == "wb_"):
-                cv2.imwrite(WB_PATH, J)
-            else:
-                cv2.imwrite(NORMAL_PATH, J)
+    # def print_files_in_dir(root_dir):
+    #     files = os.listdir(root_dir)
+    #     for file in files:
+    #         path = os.path.join(root_dir, file)
+    #         I = cv2.imread(path)
+    #         J, dark_channel, transmission_map, phase = DCP(I, is_only_result=False)
+    #         NORMAL_PATH = ospath.join('dehaze/outputs/normal', "dcp_"+phase+file)
+    #         WB_PATH = ospath.join('dehaze/outputs/white balance', "dcp_"+phase+file)
+    #         if(phase == "wb_"):
+    #             cv2.imwrite(WB_PATH, J)
+    #         else:
+    #             cv2.imwrite(NORMAL_PATH, J)
             
-    print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
+    # print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
 
 
-    # cv2.imwrite(ospath.join(DIR, 'dark channel (DCP).jpg'), dark_channel)
-    # cv2.imwrite(ospath.join(DIR, 'transmission map (DCP).jpg'), transmission_map)
+    cv2.imwrite(ospath.join(DIR, 'dark channel (DCP).jpg'), dark_channel)
+    cv2.imwrite(ospath.join(DIR, 'transmission map (DCP).jpg'), transmission_map)
     
     cv2.waitKey()
     cv2.destroyAllWindows()

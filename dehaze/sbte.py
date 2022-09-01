@@ -38,7 +38,7 @@ def compute_A_Tang(img):
     A[2] = np.median(r[mask])
     A[1] = np.median(g[mask])
     A[0] = np.median(b[mask])
-
+    
     return A
 
 
@@ -158,6 +158,11 @@ def SBTE(img, is_only_result=True):
         A = A_WB
         
     out = np.empty(I.shape, I.dtype) 
+    cv2.imwrite('dehaze/outputs/result/sbte_test.jpg', A)
+    print(A)
+    print(np.shape(A))
+    print(A.dtype)
+
     for i in range(3):
         out[..., i] = I[..., i] / A[i]
     
@@ -184,35 +189,35 @@ def SBTE(img, is_only_result=True):
 import os
 
 if __name__ == "__main__":
-    # DIR = 'dehaze/outputs'
-    # file_name = 'trees.jpg'
-    # O_PATH = ospath.join(DIR, "sbte_"+file_name)
-    # I_PATH = ospath.join('./data/hazy', file_name)
+    DIR = 'dehaze/outputs/result'
+    file_name = 'GRCN.png'
+    O_PATH = ospath.join(DIR, "sbte_"+file_name)
+    I_PATH = ospath.join('./data/hazy', file_name)
 
-    # I = cv2.imread(I_PATH)
-    # J, J_enhanced, transmission_map = SBTE(I, is_only_result=False)
+    I = cv2.imread(I_PATH)
+    J, J_enhanced, transmission_map, phase = SBTE(I, is_only_result=False)
 
-    # cv2.imwrite(O_PATH, J)
-    # cv2.imshow('Haze image', I)
-    # cv2.imshow('Dehazed image', J / MAX_LEVEL)
+    cv2.imwrite(O_PATH, J)
+    cv2.imshow('Haze image', I)
+    cv2.imshow('Dehazed image', J / MAX_LEVEL)
 
-    def print_files_in_dir(root_dir):
-        files = os.listdir(root_dir)
-        for file in files:
-            path = os.path.join(root_dir, file)
-            I = cv2.imread(path)
-            J, J_enhanced, transmission_map, phase = SBTE(I, is_only_result=False)
-            NORMAL_PATH = ospath.join('dehaze/outputs/normal', "sbte_normal_"+file)
-            WB_PATH = ospath.join('dehaze/outputs/white balance', "sbte_wb_"+file)
-            if(phase == 2):
-                cv2.imwrite(WB_PATH, J)
-            else:
-                cv2.imwrite(NORMAL_PATH, J)
+    # def print_files_in_dir(root_dir):
+    #     files = os.listdir(root_dir)
+    #     for file in files:
+    #         path = os.path.join(root_dir, file)
+    #         I = cv2.imread(path)
+    #         J, J_enhanced, transmission_map, phase = SBTE(I, is_only_result=False)
+    #         NORMAL_PATH = ospath.join('dehaze/outputs/normal', "sbte_normal_"+file)
+    #         WB_PATH = ospath.join('dehaze/outputs/white balance', "sbte_wb_"+file)
+    #         if(phase == 2):
+    #             cv2.imwrite(WB_PATH, J)
+    #         else:
+    #             cv2.imwrite(NORMAL_PATH, J)
             
-    print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
+    # print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
 
-    # cv2.imwrite(ospath.join(DIR, 'transmission map (SBTE).jpg'), transmission_map)
-    # cv2.imwrite(ospath.join(DIR, 'enhanced J (SBTE).jpg'), J_enhanced)
+    cv2.imwrite(ospath.join(DIR, 'transmission map (SBTE).jpg'), transmission_map)
+    cv2.imwrite(ospath.join(DIR, 'enhanced J (SBTE).jpg'), J_enhanced)
 
     cv2.waitKey()
     cv2.destroyAllWindows()
