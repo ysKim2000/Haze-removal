@@ -154,6 +154,7 @@ def white_balance(img, hsv, depth_map):
         
     return A, phase
 
+
 def gray_world(img):
     b, g, r = cv2.split(img)
 
