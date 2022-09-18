@@ -6,8 +6,6 @@ from os import path as ospath
 BINS = 256
 MAX_LEVEL = BINS - 1
 
-print("qwe")
-
 def transform(img, I, sbte): # img: depth, I: Hazy image, sbte: dehazy image
     h, w = img.shape[:2]
     near_image = np.zeros(img.shape, img.dtype)
