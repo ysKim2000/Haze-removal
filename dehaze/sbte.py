@@ -214,11 +214,10 @@ if __name__ == "__main__":
     #         else:
     #             cv2.imwrite(NORMAL_PATH, J)
             
-    # print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
-    # test
+    # print_files_in_dir("C:/Users/user/Desktop/RTTS/JPEGImages")
     
-    cv2.imwrite(ospath.join(DIR, 'transmission map (SBTE).jpg'), transmission_map)
-    cv2.imwrite(ospath.join(DIR, 'enhanced J (SBTE).jpg'), J_enhanced)
+    # cv2.imwrite(ospath.join(DIR, 'transmission map (SBTE).jpg'), transmission_map)
+    # cv2.imwrite(ospath.join(DIR, 'enhanced J (SBTE).jpg'), J_enhanced)
 
     cv2.waitKey()
     cv2.destroyAllWindows()
