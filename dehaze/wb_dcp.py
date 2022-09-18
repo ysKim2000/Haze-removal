@@ -21,7 +21,7 @@ def i2f(img):
 
 def f2i(img):
     return np.uint8(np.around(img * MAX_LEVEL))
-
+# test
 
 # g_img: guide image, K: kernel size
 def guided_filter(img, g_img, K):

@@ -114,7 +114,7 @@ def _recover(img, depth_map, A, beta):
 
     return J.astype(np.uint8)
 
-
+# test
 # Color Attenuation Prior
 def CAP(img, beta=DEFAULT_BETA, is_only_result=True):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) / MAX_LEVEL

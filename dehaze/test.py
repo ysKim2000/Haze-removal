@@ -22,7 +22,7 @@ def transform(img, I, sbte): # img: depth, I: Hazy image, sbte: dehazy image
 
     return masked
 
-
+# test
 if __name__ == "__main__":
     DIR = 'dehaze/outputs'
     FILE_NAME = 'trees.jpg'
