@@ -21,7 +21,7 @@ def i2f(img):
 
 def f2i(img):
     return np.uint8(np.around(img * MAX_LEVEL))
-# test
+
 
 # g_img: guide image, K: kernel size
 def guided_filter(img, g_img, K):
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     #         else:
     #             cv2.imwrite(NORMAL_PATH, J)
             
-    # print_files_in_dir("C:/Users/ys/Desktop/RTTS/JPEGImages",)
+    # print_files_in_dir("C:/Users/user/Desktop/RTTS/JPEGImages")
 
 
     cv2.imwrite(ospath.join(DIR, 'dark channel (DCP).jpg'), dark_channel)
