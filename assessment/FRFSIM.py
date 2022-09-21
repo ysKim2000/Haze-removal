@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import numpy.matlib
 import cv2
 
 BINS = 256
@@ -9,6 +10,12 @@ if __name__ == "__main__":
     D = cv2.imread('assessment/data/sbte.jpg') # Defogged image
     R = cv2.imread('assessment/data/GRCN.png') # Reference image
 
+    # Basic SETUP OF FRFSIM
+    radius = 1.5
+    # d = np.diff(getrangefromclass(D))
+    d = [0, 255]
+    C = [(0.01*d)^2, ((0.01*d)^2)/2, ((0.03*d)^2)/2, (0.03*d)^2]
+    
     # Grayscale
     Dg = cv2.cvtColor(D, cv2.COLOR_BGR2GRAY) / MAX_LEVEL # Defogged gray image 
     Rg = cv2.cvtColor(R, cv2.COLOR_BGR2GRAY) / MAX_LEVEL # Reference gray image
@@ -27,12 +34,12 @@ if __name__ == "__main__":
     R_B = R[:,:,1]
 
     # MSCN
-    MSCN_window = cv2.getGaussianKernel(7, 7/6) # Gaussian filter <- Matlab: fspecial('gaussian',7,7/6)
+    MSCN_window = cv2.getGaussianKernel(7, 7/6)     # Gaussian filter <- Matlab: fspecial('gaussian',7,7/6)
     MSCN_window = MSCN_window / sum(sum(MSCN_window))
     mu = cv2.filter2D(Dg, MSCN_window, 'replicate') # ****************replicate 알아오기*********************
     mu_sq = mu * mu
     sigma = math.sqrt(abs(cv2.filter2D(Dg*Dg, MSCN_window, 'replicate') - mu_sq))
-    D_MSCN = (Dg - mu)/(sigma+1)
+    D_MSCN = (Dg - mu)/(sigma + 1)
     cv = sigma / mu
 
     mu1 = cv2.filter2D(Rg, MSCN_window, 'replicate')
@@ -44,7 +51,10 @@ if __name__ == "__main__":
     # feature extraction and similarity calculation
     # MSCN similarity
     n, m = np.shape(D_MSCN) # 세로, 가로
-    mc_mscn = max()
+    mc_mscn = max(np.var(D_MSCN, R_MSCN))
+    w_mscn = mc_mscn / sum(mc_mscn[:])
+    mc_mscn = numpy.matlib.repmat(mc_mscn,m,1)
+    CM = d / mc_mscn
 
     # ho, wo = D.shape # Defogged image's shape
     # hc, wc = R.shape # Reference image's shape
