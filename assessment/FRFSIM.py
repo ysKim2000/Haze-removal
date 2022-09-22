@@ -55,9 +55,66 @@ if __name__ == "__main__":
     w_mscn = mc_mscn / sum(mc_mscn[:])
     mc_mscn = numpy.matlib.repmat(mc_mscn,m,1)
     CM = d / mc_mscn
+    CM = C(1)
+    SM = (2*D_MSCN*R_MSCN+CM)/(D_MSCN*D_MSCN+R_MSCN*R_MSCN)
+    mean_SM = np.mean(SM[:])
 
-    # ho, wo = D.shape # Defogged image's shape
-    # hc, wc = R.shape # Reference image's shape
-    # ratio_orig = ho/wo # 
-    # ratio_comp = hc/wc
-    # dim = (wc, hc)
+    # dark channel similarity
+    Drn = D_R / 255 # Defogged image dark channel
+    Dgn = D_G / 255
+    Dbn = D_B / 255
+    Ddc = min(min(Drn, Dgn), Dbn)
+    
+    Rrn = R_R / 255 # Reference image dark channel
+    Rgn = R_G / 255
+    Rbn = R_B / 255
+    Rdc = min(min(Rrn,Rgn), Rbn)
+
+    CD = C(2)
+    SD = (2*Ddc*Rdc+CD)/(Ddc*Ddc + Rdc*Rdc+CD)
+    mean_SD = np.mean(SD[:])
+
+    # color similarity
+    D_color = s_d*v_d # Defogged image chroma_hsv
+    R_color = s_r*v_r # reference image chroma_hsv
+
+    CC = C(3)
+    SC = (2*D_color * R_color + CC) / (D_color*D_color+R_color*R_color+CC)
+    mean_SC = np.mean(SC[:])
+
+    # gradient similarity
+    D_gradient = np.gradient(Dg) # Defogged image gradient
+    R_gradient = np.gradient(Rg) # reference image gradient
+
+    CG = C(4)
+    SG = (2*D_gradient*R_gradient+CG)/(D_gradient*D_gradient+R_gradient*R_gradient+CG)
+    mean_SG = np.mean(SG[:])
+
+    # pooling
+    if 0.85 < mean_SD and mean_SD <=1:
+        b1 = 0.2
+        b2 = 0.8
+    elif 0 <= mean_SD and mean_SD <= 0.85:
+        b1 = 0.8
+        b2 = 0.2
+    else:
+        b1 = 0.5
+        b2 = 0.5   
+
+    frfsimmap = ((SM*SD)^b1)*((SG*SC)^b2)
+    frfsmval = abs(np.mean(frfsimmap[:]))
+
+    # function gaussFilt = getGaussianWeightingFilter(radius,N)
+
+    # Get 2D or 3D Gaussianweighting filter
+
+    filtRadius = math.ceil(radius*3) # Standard deviations include >99% of the area.
+    filtSize = 2*filtRadius + 1
+
+    if N < 3:
+        # 2D Gaussian mask can be used for filtering even one-dimensional
+        # signals using imfilter.
+        gaussFilt = cv2.getGaussianKernel([filtSize, filtSize], radius)
+    else:
+        # 3D Gaussian mask
+        [x,y,z] = np.ndgrid()
