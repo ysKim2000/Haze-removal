@@ -7,12 +7,15 @@ BINS = 256
 MAX_LEVEL = BINS - 1
 
 
-D = cv2.imread('assessment/data/sbte.jpg') # Defogged image
-R = cv2.imread('assessment/data/GRCN.png') # Reference image
+D = cv2.imread('assessment/images/sbte.jpg') # Defogged image
+R = cv2.imread('assessment/images/GRCN.png') # Reference image
+
+cv2.imshow('D',D)
+cv2.imshow('R', R)
 
 # Basic SETUP OF FRFSIM
 radius = 1.5
-# d = np.diff(getrangefromclass(D))
+d = np.diff(getrangefromclass(D))
 d = [0, 255]
 C = [(0.01*d)^2, ((0.01*d)^2)/2, ((0.03*d)^2)/2, (0.03*d)^2]
     
